@@ -69,7 +69,245 @@
 	<!-- <include url="skin/vtourskin_design_117round.xml"    /> -->
 	<!-- <include url="skin/vtourskin_design_black.xml"       /> -->
 	
+	<!-- Sistema de balanza de Arquímedes -->
+	<action name="balance_init">
+		<!-- Inicializa variables globales para la balanza -->
+		set(global.balance_left_weight, 0);
+		set(global.balance_right_weight, 0);
+		set(global.balance_equilibrium, false);
+		set(global.pi_revealed, false);
+		<!-- Propiedades de los objetos -->
+		set(global.obj_sphere_weight, 50);
+		set(global.obj_cube_weight, 80);
+		set(global.obj_cylinder_weight, 60);
+	</action>
 
+	<action name="balance_place_object" args="obj_name, side, distance">
+		<!-- Coloca un objeto a distancia 'distance' en el lado 'side' (left/right) -->
+		<!-- weight = obj_weight * distance (principio de palanca) -->
+		if(get(side) == 'left',
+			add(global.balance_left_weight, calc(get('global.obj_' + obj_name + '_weight') * distance));
+		  , 
+			add(global.balance_right_weight, calc(get('global.obj_' + obj_name + '_weight') * distance));
+		);
+		balance_check_equilibrium();
+	</action>
+
+	<action name="balance_check_equilibrium">
+		<!-- Verifica si la balanza está en equilibrio (tolerancia: ±5) -->
+		sub(diff, get(global.balance_left_weight), get(global.balance_right_weight));
+		Math.abs(diff);
+		if(get(diff) LT 5,
+			set(global.balance_equilibrium, true);
+			balance_reveal_pi();
+		  ,
+			set(global.balance_equilibrium, false);
+		);
+	</action>
+
+	<action name="balance_reveal_pi">
+		<!-- Revela el símbolo π cuando la balanza está equilibrada -->
+		if(!get(global.pi_revealed),
+			set(global.pi_revealed, true);
+			trace('¡EQUILIBRIO ALCANZADO! π ≈ 3.14159...');
+			<!-- Muestra un hotspot o texto con π -->
+			if(!layer[pi_revelation],
+				addlayer(pi_revelation, text);
+				set(layer[pi_revelation], 
+					html='π ≈ 3.14159',
+					css='color:#FFD700; font-size:48px; font-weight:bold;',
+					align=center,
+					alpha=0.0,
+					bgcolor=0x000000,
+					bgalpha=0.5,
+					padding='20',
+					bgroundedge=10
+				);
+				tween(layer[pi_revelation].alpha, 1.0, 0.5);
+			);
+		);
+	</action>
+
+	<action name="balance_reset">
+		<!-- Reinicia la balanza -->
+		set(global.balance_left_weight, 0);
+		set(global.balance_right_weight, 0);
+		set(global.balance_equilibrium, false);
+		set(global.pi_revealed, false);
+		if(layer[pi_revelation], removelayer(pi_revelation); );
+	</action>
+
+	<action name="show_menu">
+		<!-- Muestra el menú de combinaciones -->
+		if(!layer[menu_background],
+			addlayer(menu_background, text);
+			set(layer[menu_background],
+				html='<b>Combinaciones de la Balanza</b>&#10;&#10;Selecciona dónde colocar cada objeto:',
+				css='color:#FFFFFF; font-size:24px; font-weight:bold; text-align:center;',
+				align=center,
+				alpha=1.0,
+				bgcolor=0x1a1a1a,
+				bgalpha=0.9,
+				padding='30',
+				bgroundedge=15,
+				x='center',
+				y='50%'
+		);
+		);
+	</action>
+
+	<action name="select_combination" args="combo_id">
+		<!-- Guarda la combinación seleccionada y navega a la escena de juego -->
+		set(global.selected_combo, get(combo_id));
+		trace(concat('Combinación seleccionada: ', get(global.selected_combo)));
+		loadscene(scene_Spztano_game, MERGE);
+	</action>
+
+	<action name="validate_combination">
+		<!-- Valida si la combinación actual es correcta -->
+		<!-- Combinaciones correctas predefinidas:
+		     1: Esfera izq(10) + Cubo der(25) → Cil arriba
+		     2: Cubo izq(15) + Cilindro der(20) → Esfera arriba
+		     3: Esfera izq(5) + Cilindro der(5) + Cubo neutral → π
+		-->
+		copy(combo_sel, global.selected_combo);
+		
+		if(get(combo_sel) == '1',
+			<!-- Combinación 1: validar posiciones -->
+			copy(s_pos, hotspot[obj_sphere].ath);
+			copy(c_pos, hotspot[obj_cube].ath);
+			copy(cyl_pos, hotspot[obj_cylinder].ath);
+			<!-- Esfera debe estar izq, Cubo der, Cilindro neutral -->
+			if(get(s_pos) LT -5 AND get(c_pos) GT 5 AND get(cyl_pos) GT -5 AND get(cyl_pos) LT 5,
+				show_correct_message();
+			  ,
+				show_incorrect_message();
+			);
+		  , get(combo_sel) == '2',
+			<!-- Combinación 2 -->
+			copy(s_pos, hotspot[obj_sphere].ath);
+			copy(c_pos, hotspot[obj_cube].ath);
+			copy(cyl_pos, hotspot[obj_cylinder].ath);
+			<!-- Cubo izq, Cilindro der, Esfera neutral -->
+			if(get(c_pos) LT -5 AND get(cyl_pos) GT 5 AND get(s_pos) GT -5 AND get(s_pos) LT 5,
+				show_correct_message();
+			  ,
+				show_incorrect_message();
+			);
+		  , get(combo_sel) == '3',
+			<!-- Combinación 3 -->
+			copy(s_pos, hotspot[obj_sphere].ath);
+			copy(c_pos, hotspot[obj_cube].ath);
+			copy(cyl_pos, hotspot[obj_cylinder].ath);
+			<!-- Todos distribuidos equilibradamente -->
+			calculate_balance();
+			if(get(global.balance_equilibrium),
+				show_correct_message();
+			  ,
+				show_incorrect_message();
+			);
+		);
+	</action>
+
+	<action name="show_incorrect_message">
+		<!-- Muestra mensaje "Incorrecto" -->
+		if(layer[result_message], removelayer(result_message); );
+		addlayer(result_message, text);
+		set(layer[result_message],
+			html='<b style="color:#FF4444;">✗ ¡Incorrecto!</b>&#10;&#10;Intenta nuevamente reposicionando los objetos.',
+			css='font-size:28px; text-align:center;',
+			align=center,
+			alpha=0.0,
+			bgcolor=0x000000,
+			bgalpha=0.8,
+			padding='20',
+			bgroundedge=10,
+			x='center',
+			y='center'
+		);
+		tween(layer[result_message].alpha, 1.0, 0.3);
+		wait(2);
+		tween(layer[result_message].alpha, 0.0, 0.3);
+	</action>
+
+	<action name="show_correct_message">
+		<!-- Muestra mensaje de éxito + π -->
+		if(layer[result_message], removelayer(result_message); );
+		addlayer(result_message, text);
+		set(layer[result_message],
+			html='<b style="color:#44FF44;">✓ ¡Correcto!</b>',
+			css='font-size:28px; text-align:center;',
+			align=center,
+			alpha=0.0,
+			bgcolor=0x000000,
+			bgalpha=0.8,
+			padding='20',
+			bgroundedge=10,
+			x='center',
+			y='center'
+		);
+		tween(layer[result_message].alpha, 1.0, 0.3);
+		wait(1);
+		balance_reveal_pi();
+	</action>
+
+	<action name="calculate_balance">
+		<!-- Calcula el equilibrio basado en posiciones actuales de los 3 objetos -->
+		set(global.balance_left_weight, 0);
+		set(global.balance_right_weight, 0);
+		
+		<!-- Esfera: peso 50, distancia del eje central ath=0 -->
+		copy(sphere_ath, hotspot[obj_sphere].ath);
+		if(get(sphere_ath) LT 0,
+			calc(sphere_dist, 0 - get(sphere_ath));
+			calc(sphere_weight, 50 * get(sphere_dist));
+			copy(global.balance_left_weight, get(sphere_weight));
+		  ,
+			calc(sphere_dist, get(sphere_ath));
+			calc(sphere_weight, 50 * get(sphere_dist));
+			copy(global.balance_right_weight, get(sphere_weight));
+		);
+
+		<!-- Cubo: peso 80, distancia del eje central ath=0 -->
+		copy(cube_ath, hotspot[obj_cube].ath);
+		if(get(cube_ath) LT 0,
+			calc(cube_dist, 0 - get(cube_ath));
+			calc(cube_weight, 80 * get(cube_dist));
+			add(global.balance_left_weight, get(cube_weight));
+		  ,
+			calc(cube_dist, get(cube_ath));
+			calc(cube_weight, 80 * get(cube_dist));
+			add(global.balance_right_weight, get(cube_weight));
+		);
+
+		<!-- Cilindro: peso 60, distancia del eje central ath=0 -->
+		copy(cyl_ath, hotspot[obj_cylinder].ath);
+		if(get(cyl_ath) LT 0,
+			calc(cyl_dist, 0 - get(cyl_ath));
+			calc(cyl_weight, 60 * get(cyl_dist));
+			add(global.balance_left_weight, get(cyl_weight));
+		  ,
+			calc(cyl_dist, get(cyl_ath));
+			calc(cyl_weight, 60 * get(cyl_dist));
+			add(global.balance_right_weight, get(cyl_weight));
+		);
+
+		<!-- Verifica equilibrio: diferencia absoluta < 200 = equilibrio -->
+		sub(diff, get(global.balance_left_weight), get(global.balance_right_weight));
+		if(get(diff) LT 0,
+			calc(abs_diff, 0 - get(diff));
+		  ,
+			copy(abs_diff, diff);
+		);
+		trace(concat('Balance - Izq: ', get(global.balance_left_weight), ' Der: ', get(global.balance_right_weight), ' Diff: ', get(abs_diff)));
+		
+		if(get(abs_diff) LT 200,
+			set(global.balance_equilibrium, true);
+			balance_reveal_pi();
+		  ,
+			set(global.balance_equilibrium, false);
+		);
+	</action>
 	
 	<scene name="scene_Capilla_2_con_lira" title="Capilla 2 con lira" onstart="" havevrimage.mobilevr="false" havevrimage.no-mobilevr="true" thumburl="panos/Capilla_2_con_lira.tiles/thumb.jpg" lat="" lng="" alt="" heading="">
 		
@@ -143,7 +381,7 @@
 
 	</scene>
 
-	<scene name="scene_Spztano" title="Sótano" onstart="" havevrimage.mobilevr="false" havevrimage.no-mobilevr="true" thumburl="panos/Spztano.tiles/thumb.jpg" lat="" lng="" alt="" heading="">
+	<scene name="scene_Spztano" title="Sótano - Menú" onstart="balance_init(); show_menu();" havevrimage.mobilevr="false" havevrimage.no-mobilevr="true" thumburl="panos/Spztano.tiles/thumb.jpg" lat="" lng="" alt="" heading="">
 		
 		<control bouncinglimits="calc:image.cube ? true : false" />
 
@@ -158,6 +396,108 @@
 		<image if="webvr.isenabled OR device.mobilevr">
 			<cube url="panos/Spztano.tiles/vr/pano_%s.jpg" />
 		</image>
+
+		<!-- Botones de combinaciones -->
+		<hotspot name="combo_btn_1"
+		         style="skin_hotspotstyle"
+		         x="center"
+		         y="35%"
+		         width="350"
+		         height="70"
+		         title="1. Esfera (Izq) + Cubo (Der)"
+		         onclick="select_combination('1');"
+		/>
+		<hotspot name="combo_btn_2"
+		         style="skin_hotspotstyle"
+		         x="center"
+		         y="52%"
+		         width="350"
+		         height="70"
+		         title="2. Cubo (Izq) + Cilindro (Der)"
+		         onclick="select_combination('2');"
+		/>
+		<hotspot name="combo_btn_3"
+		         style="skin_hotspotstyle"
+		         x="center"
+		         y="69%"
+		         width="350"
+		         height="70"
+		         title="3. Equilibrio Total (Los 3)"
+		         onclick="select_combination('3');"
+		/>
+
+	</scene>
+
+	<scene name="scene_Spztano_game" title="Sótano - Juego" onstart="balance_init();" havevrimage.mobilevr="false" havevrimage.no-mobilevr="true" thumburl="panos/Spztano.tiles/thumb.jpg" lat="" lng="" alt="" heading="">
+		
+		<control bouncinglimits="calc:image.cube ? true : false" />
+
+		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/Spztano.tiles/preview.jpg" />
+
+		<image if="!(webvr.isenabled OR device.mobilevr)">
+			<cube url="panos/Spztano.tiles/%s/l%l/%0v/l%l_%s_%0v_%0h.jpg" multires="512,768,1664,3200,6400" />
+		</image>
+
+		<image if="webvr.isenabled OR device.mobilevr">
+			<cube url="panos/Spztano.tiles/vr/pano_%s.jpg" />
+		</image>
+
+		<!-- Objetos draggables -->
+		<hotspot name="obj_sphere"
+		         style="skin_hotspotstyle"
+		         ath="-30"
+		         atv="0"
+		         title="Esfera (peso 50)"
+		         capture="true"
+		         ondown="set(global._drag_obj, name); set(control.usercontrol, off);"
+		         onmove="screentosphere(mouse.stagex, mouse.stagey, new_ath, new_atv); set(hotspot[get(global._drag_obj)].ath, get(new_ath)); set(hotspot[get(global._drag_obj)].atv, get(new_atv));"
+		         onup="set(control.usercontrol, all);"
+		         onout="set(control.usercontrol, all);"
+		/>
+		<hotspot name="obj_cube"
+		         style="skin_hotspotstyle"
+		         ath="30"
+		         atv="0"
+		         title="Cubo (peso 80)"
+		         capture="true"
+		         ondown="set(global._drag_obj, name); set(control.usercontrol, off);"
+		         onmove="screentosphere(mouse.stagex, mouse.stagey, new_ath, new_atv); set(hotspot[get(global._drag_obj)].ath, get(new_ath)); set(hotspot[get(global._drag_obj)].atv, get(new_atv));"
+		         onup="set(control.usercontrol, all);"
+		         onout="set(control.usercontrol, all);"
+		/>
+		<hotspot name="obj_cylinder"
+		         style="skin_hotspotstyle"
+		         ath="0"
+		         atv="20"
+		         title="Cilindro (peso 60)"
+		         capture="true"
+		         ondown="set(global._drag_obj, name); set(control.usercontrol, off);"
+		         onmove="screentosphere(mouse.stagex, mouse.stagey, new_ath, new_atv); set(hotspot[get(global._drag_obj)].ath, get(new_ath)); set(hotspot[get(global._drag_obj)].atv, get(new_atv));"
+		         onup="set(control.usercontrol, all);"
+		         onout="set(control.usercontrol, all);"
+		/>
+
+		<!-- Botón de validación -->
+		<hotspot name="validate_btn"
+		         style="skin_hotspotstyle"
+		         x="center"
+		         y="95%"
+		         width="200"
+		         height="50"
+		         title="✓ VALIDAR"
+		         onclick="validate_combination();"
+		/>
+		<hotspot name="back_btn"
+		         style="skin_hotspotstyle"
+		         x="10"
+		         y="10"
+		         width="100"
+		         height="40"
+		         title="← Atrás"
+		         onclick="loadscene(scene_Spztano, MERGE);"
+		/>
 
 	</scene>
 
