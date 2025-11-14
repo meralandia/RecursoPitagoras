@@ -399,9 +399,10 @@
 
 		<!-- Botones de combinaciones -->
 		<hotspot name="combo_btn_1"
+				 url="Images/balanza.png"
 		         style="skin_hotspotstyle"
-		         x="center"
-		         y="35%"
+				 ath="180"
+				 atv="180"	
 		         width="350"
 		         height="70"
 		         title="1. Esfera (Izq) + Cubo (Der)"
@@ -409,8 +410,8 @@
 		/>
 		<hotspot name="combo_btn_2"
 		         style="skin_hotspotstyle"
-		         x="center"
-		         y="52%"
+				 ath="100"
+				 atv="-100"
 		         width="350"
 		         height="70"
 		         title="2. Cubo (Izq) + Cilindro (Der)"
@@ -418,8 +419,8 @@
 		/>
 		<hotspot name="combo_btn_3"
 		         style="skin_hotspotstyle"
-		         x="center"
-		         y="69%"
+				 ath="90"
+				 atv="90"
 		         width="350"
 		         height="70"
 		         title="3. Equilibrio Total (Los 3)"
@@ -482,8 +483,9 @@
 		<!-- Botón de validación -->
 		<hotspot name="validate_btn"
 		         style="skin_hotspotstyle"
-		         x="center"
-		         y="95%"
+				 url="Images/checkMark.png"
+				 ath="100"
+				 atv="100"
 		         width="200"
 		         height="50"
 		         title="✓ VALIDAR"
@@ -491,8 +493,9 @@
 		/>
 		<hotspot name="back_btn"
 		         style="skin_hotspotstyle"
-		         x="10"
-		         y="10"
+				 url="Images/backIcon.png"
+				 ath="90"
+				 atv="90"
 		         width="100"
 		         height="40"
 		         title="← Atrás"
