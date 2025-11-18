@@ -277,7 +277,7 @@
 	       linkedscene=""
 	       linkedscene_lookat=""
 	       linkedscene_hoffset="0"
-	       use3dtransition="false"
+	       use3dtransition="true"
 	       onclick="skin_hotspotstyle_click();"
 	       depth="1000"
 	       scale="0.5"
