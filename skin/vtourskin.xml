@@ -285,6 +285,19 @@
 	       onout.addevent="tween(scale,0.5);"
 	       onloaded.addevent="skin_hotspotstyle_setup();"
 	       />
+	<style name="skin_hotspotstyle2" url="vtourskin_hotspot.png" edge="top" distorted="true"
+	       tooltip=""
+	       linkedscene=""
+	       linkedscene_lookat=""
+	       linkedscene_hoffset="0"
+	       use3dtransition="true"
+	       onclick="skin_hotspotstyle_click();"
+	       depth="1000"
+	       scale="0.1"
+	       onover.addevent="tween(scale,0.111);"
+	       onout.addevent="tween(scale,0.1);"
+	       onloaded.addevent="skin_hotspotstyle_setup();"
+	       />
 
 	<action name="skin_hotspotstyle_setup" scope="local">
 		if(isvalue(caller.linkedscene) AND skin_settings.tooltips_hotspots,

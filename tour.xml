@@ -15,7 +15,7 @@
 	               maps_google_api_key=""
 	               maps_zoombuttons="false"
 	               maps_loadonfirstuse="true"
-	               gyro="true"
+	               gyro="true" 
 	               gyro_keeplookingdirection="false"
 	               webvr="true"
 	               webvr_keeplookingdirection="true"
@@ -75,246 +75,110 @@
 	<!-- <include url="skin/vtourskin_design_117round.xml"    /> -->
 	<!-- <include url="skin/vtourskin_design_black.xml"       /> -->
 	
-	<!-- Sistema de balanza de Arquímedes -->
-	<action name="balance_init">
-		<!-- Inicializa variables globales para la balanza -->
-		set(global.balance_left_weight, 0);
-		set(global.balance_right_weight, 0);
-		set(global.balance_equilibrium, false);
-		set(global.pi_revealed, false);
-		<!-- Propiedades de los objetos -->
-		set(global.obj_sphere_weight, 50);
-		set(global.obj_cube_weight, 80);
-		set(global.obj_cylinder_weight, 60);
-	</action>
+	<!-- Define actions here preinit, onload or onstart-->
+	<!-- <action name="action_Demo" autorun="preinit" >
+		trace("Demo action executed.");
+	</action> -->
 
-	<action name="balance_place_object" args="obj_name, side, distance">
-		<!-- Coloca un objeto a distancia 'distance' en el lado 'side' (left/right) -->
-		<!-- weight = obj_weight * distance (principio de palanca) -->
-		if(get(side) == 'left',
-			add(global.balance_left_weight, calc(get('global.obj_' + obj_name + '_weight') * distance));
-		  , 
-			add(global.balance_right_weight, calc(get('global.obj_' + obj_name + '_weight') * distance));
-		);
-		balance_check_equilibrium();
-	</action>
+	<action name="action_Demo" type ="javascript" autorun="preinit"><![CDATA[
+		console.log(krpano);
+	]]></action>
 
-	<action name="balance_check_equilibrium">
-		<!-- Verifica si la balanza está en equilibrio (tolerancia: ±5) -->
-		sub(diff, get(global.balance_left_weight), get(global.balance_right_weight));
-		Math.abs(diff);
-		if(get(diff) LT 5,
-			set(global.balance_equilibrium, true);
-			balance_reveal_pi();
-		  ,
-			set(global.balance_equilibrium, false);
-		);
-	</action>
-
-	<action name="balance_reveal_pi">
-		<!-- Revela el símbolo π cuando la balanza está equilibrada -->
-		if(!get(global.pi_revealed),
-			set(global.pi_revealed, true);
-			trace('¡EQUILIBRIO ALCANZADO! π ≈ 3.14159...');
-			<!-- Muestra un hotspot o texto con π -->
-			if(!layer[pi_revelation],
-				addlayer(pi_revelation, text);
-				set(layer[pi_revelation], 
-					html='π ≈ 3.14159',
-					css='color:#FFD700; font-size:48px; font-weight:bold;',
-					align=center,
-					alpha=0.0,
-					bgcolor=0x000000,
-					bgalpha=0.5,
-					padding='20',
-					bgroundedge=10
-				);
-				tween(layer[pi_revelation].alpha, 1.0, 0.5);
-			);
-		);
-	</action>
-
-	<action name="balance_reset">
-		<!-- Reinicia la balanza -->
-		set(global.balance_left_weight, 0);
-		set(global.balance_right_weight, 0);
-		set(global.balance_equilibrium, false);
-		set(global.pi_revealed, false);
-		if(layer[pi_revelation], removelayer(pi_revelation); );
-	</action>
-
-	<action name="show_menu">
-		<!-- Muestra el menú de combinaciones -->
-		if(!layer[menu_background],
-			addlayer(menu_background, text);
-			set(layer[menu_background],
-				html='<b>Combinaciones de la Balanza</b>&#10;&#10;Selecciona dónde colocar cada objeto:',
-				css='color:#FFFFFF; font-size:24px; font-weight:bold; text-align:center;',
-				align=center,
-				alpha=1.0,
-				bgcolor=0x1a1a1a,
-				bgalpha=0.9,
-				padding='30',
-				bgroundedge=15,
-				x='center',
-				y='50%'
-		);
-		);
-	</action>
-
-	<action name="select_combination" args="combo_id">
-		<!-- Guarda la combinación seleccionada y navega a la escena de juego -->
-		set(global.selected_combo, get(combo_id));
-		trace(concat('Combinación seleccionada: ', get(global.selected_combo)));
-		loadscene(scene_Spztano_game, MERGE);
-	</action>
-
-	<action name="validate_combination">
-		<!-- Valida si la combinación actual es correcta -->
-		<!-- Combinaciones correctas predefinidas:
-		     1: Esfera izq(10) + Cubo der(25) → Cil arriba
-		     2: Cubo izq(15) + Cilindro der(20) → Esfera arriba
-		     3: Esfera izq(5) + Cilindro der(5) + Cubo neutral → π
-		-->
-		copy(combo_sel, global.selected_combo);
-		
-		if(get(combo_sel) == '1',
-			<!-- Combinación 1: validar posiciones -->
-			copy(s_pos, hotspot[obj_sphere].ath);
-			copy(c_pos, hotspot[obj_cube].ath);
-			copy(cyl_pos, hotspot[obj_cylinder].ath);
-			<!-- Esfera debe estar izq, Cubo der, Cilindro neutral -->
-			if(get(s_pos) LT -5 AND get(c_pos) GT 5 AND get(cyl_pos) GT -5 AND get(cyl_pos) LT 5,
-				show_correct_message();
-			  ,
-				show_incorrect_message();
-			);
-		  , get(combo_sel) == '2',
-			<!-- Combinación 2 -->
-			copy(s_pos, hotspot[obj_sphere].ath);
-			copy(c_pos, hotspot[obj_cube].ath);
-			copy(cyl_pos, hotspot[obj_cylinder].ath);
-			<!-- Cubo izq, Cilindro der, Esfera neutral -->
-			if(get(c_pos) LT -5 AND get(cyl_pos) GT 5 AND get(s_pos) GT -5 AND get(s_pos) LT 5,
-				show_correct_message();
-			  ,
-				show_incorrect_message();
-			);
-		  , get(combo_sel) == '3',
-			<!-- Combinación 3 -->
-			copy(s_pos, hotspot[obj_sphere].ath);
-			copy(c_pos, hotspot[obj_cube].ath);
-			copy(cyl_pos, hotspot[obj_cylinder].ath);
-			<!-- Todos distribuidos equilibradamente -->
-			calculate_balance();
-			if(get(global.balance_equilibrium),
-				show_correct_message();
-			  ,
-				show_incorrect_message();
-			);
-		);
-	</action>
-
-	<action name="show_incorrect_message">
-		<!-- Muestra mensaje "Incorrecto" -->
-		if(layer[result_message], removelayer(result_message); );
-		addlayer(result_message, text);
-		set(layer[result_message],
-			html='<b style="color:#FF4444;">✗ ¡Incorrecto!</b>&#10;&#10;Intenta nuevamente reposicionando los objetos.',
-			css='font-size:28px; text-align:center;',
-			align=center,
-			alpha=0.0,
-			bgcolor=0x000000,
-			bgalpha=0.8,
-			padding='20',
-			bgroundedge=10,
-			x='center',
-			y='center'
-		);
-		tween(layer[result_message].alpha, 1.0, 0.3);
-		wait(2);
-		tween(layer[result_message].alpha, 0.0, 0.3);
-	</action>
-
-	<action name="show_correct_message">
-		<!-- Muestra mensaje de éxito + π -->
-		if(layer[result_message], removelayer(result_message); );
-		addlayer(result_message, text);
-		set(layer[result_message],
-			html='<b style="color:#44FF44;">✓ ¡Correcto!</b>',
-			css='font-size:28px; text-align:center;',
-			align=center,
-			alpha=0.0,
-			bgcolor=0x000000,
-			bgalpha=0.8,
-			padding='20',
-			bgroundedge=10,
-			x='center',
-			y='center'
-		);
-		tween(layer[result_message].alpha, 1.0, 0.3);
-		wait(1);
-		balance_reveal_pi();
-	</action>
-
-	<action name="calculate_balance">
-		<!-- Calcula el equilibrio basado en posiciones actuales de los 3 objetos -->
-		set(global.balance_left_weight, 0);
-		set(global.balance_right_weight, 0);
-		
-		<!-- Esfera: peso 50, distancia del eje central ath=0 -->
-		copy(sphere_ath, hotspot[obj_sphere].ath);
-		if(get(sphere_ath) LT 0,
-			calc(sphere_dist, 0 - get(sphere_ath));
-			calc(sphere_weight, 50 * get(sphere_dist));
-			copy(global.balance_left_weight, get(sphere_weight));
-		  ,
-			calc(sphere_dist, get(sphere_ath));
-			calc(sphere_weight, 50 * get(sphere_dist));
-			copy(global.balance_right_weight, get(sphere_weight));
-		);
-
-		<!-- Cubo: peso 80, distancia del eje central ath=0 -->
-		copy(cube_ath, hotspot[obj_cube].ath);
-		if(get(cube_ath) LT 0,
-			calc(cube_dist, 0 - get(cube_ath));
-			calc(cube_weight, 80 * get(cube_dist));
-			add(global.balance_left_weight, get(cube_weight));
-		  ,
-			calc(cube_dist, get(cube_ath));
-			calc(cube_weight, 80 * get(cube_dist));
-			add(global.balance_right_weight, get(cube_weight));
-		);
-
-		<!-- Cilindro: peso 60, distancia del eje central ath=0 -->
-		copy(cyl_ath, hotspot[obj_cylinder].ath);
-		if(get(cyl_ath) LT 0,
-			calc(cyl_dist, 0 - get(cyl_ath));
-			calc(cyl_weight, 60 * get(cyl_dist));
-			add(global.balance_left_weight, get(cyl_weight));
-		  ,
-			calc(cyl_dist, get(cyl_ath));
-			calc(cyl_weight, 60 * get(cyl_dist));
-			add(global.balance_right_weight, get(cyl_weight));
-		);
-
-		<!-- Verifica equilibrio: diferencia absoluta < 200 = equilibrio -->
-		sub(diff, get(global.balance_left_weight), get(global.balance_right_weight));
-		if(get(diff) LT 0,
-			calc(abs_diff, 0 - get(diff));
-		  ,
-			copy(abs_diff, diff);
-		);
-		trace(concat('Balance - Izq: ', get(global.balance_left_weight), ' Der: ', get(global.balance_right_weight), ' Diff: ', get(abs_diff)));
-		
-		if(get(abs_diff) LT 200,
-			set(global.balance_equilibrium, true);
-			balance_reveal_pi();
-		  ,
-			set(global.balance_equilibrium, false);
-		);
-	</action>
+	<action name="action_Demo" type ="javascript" autorun="onload"><![CDATA[
+		let currentScene = krpano.get("xml.scene");
+		console.log(currentScene);
+	]]></action>
 	
+	<action name="guided_intro" type="javascript"><![CDATA[
+		krpano.call("lookto(30, 0, 80, smooth(3));");
+
+		setTimeout(() => {
+			krpano.call("lookto(-40, 10, 70, smooth(3), false);");
+		}, 3500);
+
+		setTimeout(() => {
+			krpano.call("lookto(0, -10, 80, smooth(3), false);");
+		}, 7000);
+
+		setTimeout(() => {
+			krpano.call("lookto(90, 0, 100, smooth(3), false);");
+		}, 10500);
+
+		// Zoom out al terminar el último lookto
+		setTimeout(() => {
+			krpano.call("zoomto(120, smooth(3));");   // cambia 120 por el FOV que quieras
+		}, 15000);  // 3.5s después del anterior
+
+	]]></action>
+
+	<action name="moveMyHotspot"><![CDATA[
+		if(hotspot[%1].isMoved !== true,
+			copy(hotspot[%1].orig_ath, hotspot[%1].ath);
+			copy(hotspot[%1].orig_atv, hotspot[%1].atv);
+
+			set(hotspot[%1].ath, 45);
+			set(hotspot[%1].atv, -10);
+
+			set(hotspot[%1].isMoved, true);
+		,
+			set(hotspot[%1].ath, 140);
+			set(hotspot[%1].atv, 180);
+
+			set(hotspot[%1].isMoved, false);
+		);
+	]]></action>
+	
+	<action name="moveMyHotspot2"><![CDATA[
+		if(!hotspot[%1].isMoved,
+
+			// Guardar posición original
+			set(hotspot[%1].orig_ath, get(hotspot[%1].ath));
+			set(hotspot[%1].orig_atv, get(hotspot[%1].atv));
+
+			// Crear offset aleatorio (-3 a +3 grados)
+			set(rndath, calc(random()*6 - 1.5));
+			set(rndatv, calc(random()*6 - 1.5));
+
+			// Nueva posición base + dispersión
+			tween(hotspot[%1].ath, calc(15.80 + rndath), 0.7, easeOutQuad);
+			tween(hotspot[%1].atv, calc(1.5 + rndatv), 0.7, easeOutQuad);
+
+			set(hotspot[%1].isMoved, true);
+		,
+			// Regresar al origen guardado
+			tween(hotspot[%1].ath, get(hotspot[%1].orig_ath), 0.7, easeOutQuad);
+			tween(hotspot[%1].atv, get(hotspot[%1].orig_atv), 0.7, easeOutQuad);
+
+			set(hotspot[%1].isMoved, false);
+		);
+	]]></action>
+
+	<action name="moveMyHotspot"><![CDATA[
+		if(!hotspot[%1].isMoved,
+
+			// Guardar posición original
+			set(hotspot[%1].orig_ath, get(hotspot[%1].ath));
+			set(hotspot[%1].orig_atv, get(hotspot[%1].atv));
+
+			// Crear offset aleatorio (-3 a +3 grados)
+			set(rndath, calc(random()*6 - 1.5));
+			set(rndatv, calc(random()*6 - 1.5));
+
+			// Nueva posición base + dispersión
+			tween(hotspot[%1].ath, calc(-16.80 + rndath), 0.7, easeOutQuad);
+			tween(hotspot[%1].atv, calc(-1.5 + rndatv), 0.7, easeOutQuad);
+
+			set(hotspot[%1].isMoved, true);
+		,
+			// Regresar al origen guardado
+			tween(hotspot[%1].ath, get(hotspot[%1].orig_ath), 0.7, easeOutQuad);
+			tween(hotspot[%1].atv, get(hotspot[%1].orig_atv), 0.7, easeOutQuad);
+
+			set(hotspot[%1].isMoved, false);
+		);
+	]]></action>
+
+
 	<scene name="scene_Capilla_2_con_lira" title="Capilla 2 con lira" onstart="" havevrimage.mobilevr="false" havevrimage.no-mobilevr="true" thumburl="panos/Capilla_2_con_lira.tiles/thumb.jpg" lat="" lng="" alt="" heading="">
 		
 		<control bouncinglimits="calc:image.cube ? true : false" />
@@ -333,7 +197,7 @@
 
 	</scene>
 
-	<scene name="scene_Capilla" title="Capilla" onstart="" havevrimage.mobilevr="false" havevrimage.no-mobilevr="true" thumburl="panos/Capilla.tiles/thumb.jpg" lat="" lng="" alt="" heading="">
+	<scene name="scene_Capilla" title="Capilla" onstart="guided_intro();" havevrimage.mobilevr="false" havevrimage.no-mobilevr="true" thumburl="panos/Capilla.tiles/thumb.jpg" lat="" lng="" alt="" heading="">
 		
 		<control bouncinglimits="calc:image.cube ? true : false" />
 
@@ -351,7 +215,7 @@
 
 	</scene>
 
-	<scene name="scene_Espacio" title="Espacio" onstart="" havevrimage.mobilevr="false" havevrimage.no-mobilevr="true" thumburl="panos/Espacio.tiles/thumb.jpg" lat="" lng="" alt="" heading="">
+	<scene name="scene_Espacio" title="Espacio" onstart="guided_intro();" havevrimage.mobilevr="false" havevrimage.no-mobilevr="true" thumburl="panos/Espacio.tiles/thumb.jpg" lat="" lng="" alt="" heading="">
 		
 		<control bouncinglimits="calc:image.cube ? true : false" />
 
@@ -387,7 +251,7 @@
 
 	</scene>
 
-	<scene name="scene_Spztano" title="Sótano - Menú" onstart="balance_init(); show_menu();" havevrimage.mobilevr="false" havevrimage.no-mobilevr="true" thumburl="panos/Spztano.tiles/thumb.jpg" lat="" lng="" alt="" heading="">
+	<scene name="scene_Spztano" title="Sótano - Menú" onstart="" havevrimage.mobilevr="false" havevrimage.no-mobilevr="true" thumburl="panos/Spztano.tiles/thumb.jpg" lat="" lng="" alt="" heading="">
 		
 		<control bouncinglimits="calc:image.cube ? true : false" />
 
@@ -408,30 +272,70 @@
 				 url="Images/balanza.png"
 				 ath="180"
 				 atv="180"	
-				 scale="0.5"
+				 scale="1"
 		         title="1. Esfera (Izq) + Cubo (Der)"
-		         onclick="select_combination('1');"
+				 depth="100"
+				 handcoursor="false"
+				 enabled="false"
 		/>
-		<hotspot name="combo_btn_2"
-				 url="Images/combo1.png"
-				 ath="140"
-				 atv="180"
-
-		         title="2. Cubo (Izq) + Cilindro (Der)"
-		         onclick="select_combination('2');"
+		<!-- Objetos draggables izquierda-->
+		<hotspot name="obj_sphere"
+				 url="Images/sphere.png"
+		         ath="-36"
+		         atv="6"
+		         onclick="moveMyHotspot('obj_sphere'); set(enabled,false); delayedcall(1, set(enabled,true));"
+				 scale="0.2"
 		/>
-		<hotspot name="combo_btn_3"
-				 url="Images/combo2.png"
-				 ath="220"
-				 atv="180"
+		<hotspot name="obj_cube"
+				 url="Images/cube.png"
+		         ath="-36"
+		         atv="-7"
+				 scale="0.05"
+		         onclick="moveMyHotspot('obj_cube'); set(enabled,false); delayedcall(1, set(enabled,true));"
+		/>
+		<hotspot name="obj_cylinder"
+				 url="Images/cylinder.png"
+		         ath="-36"
+		         atv="-0.5"
+		         onclick="moveMyHotspot('obj_cylinder'); set(enabled,false); delayedcall(1, set(enabled,true));"
+				 scale="0.2"
+		/>
 
-		         title="3. Equilibrio Total (Los 3)"
-		         onclick="select_combination('3');"
+		<!-- Objetos draggables derecha -->
+		<hotspot name="obj_sphere2"
+				 url="Images/sphere.png"
+		         ath="36"
+		         atv="6"
+		         onclick="moveMyHotspot2('obj_sphere2'); set(enabled,false); delayedcall(1, set(enabled,true));"
+				 scale="0.2"
+		/>
+		<hotspot name="obj_cube2"
+				 url="Images/cube.png"
+		         ath="36"
+		         atv="-7"
+				 scale="0.05"
+		         onclick="moveMyHotspot2('obj_cube2'); set(enabled,false); delayedcall(1, set(enabled,true));"
+		/>
+		<hotspot name="obj_cylinder2"
+				 url="Images/cylinder.png"
+		         ath="36"
+		         atv="-0.5"
+		         onclick="moveMyHotspot2('obj_cylinder2'); set(enabled,false); delayedcall(1, set(enabled,true));"
+				 scale="0.2"
+		/>
+
+		<!-- Botón de validación -->
+		<hotspot name="validate_btn"
+		         style="skin_hotspotstyle2"
+				 url="Images/checkMark.png"
+				 ath="0"
+				 atv="-35"
+				 scale="0.1"
 		/>
 
 	</scene>
 
-	<scene name="scene_Spztano_game" title="Sótano - Juego" onstart="balance_init();" havevrimage.mobilevr="false" havevrimage.no-mobilevr="true" thumburl="panos/Spztano.tiles/thumb.jpg" lat="" lng="" alt="" heading="">
+	<scene name="scene_Spztano_game" title="Sótano - Juego" onstart="" havevrimage.mobilevr="false" havevrimage.no-mobilevr="true" thumburl="panos/Spztano.tiles/thumb.jpg" lat="" lng="" alt="" heading="">
 		
 		<control bouncinglimits="calc:image.cube ? true : false" />
 
@@ -447,41 +351,7 @@
 			<cube url="panos/Spztano.tiles/vr/pano_%s.jpg" />
 		</image>
 
-		<!-- Objetos draggables -->
-		<hotspot name="obj_sphere"
-				 url="Images/sphere.png"
-		         ath="200"
-		         atv="180"
-		         title="Esfera (peso 50)"
-		         capture="true"
-		         ondown="set(global._drag_obj, name); set(control.usercontrol, off);"
-		         onmove="screentosphere(mouse.stagex, mouse.stagey, new_ath, new_atv); set(hotspot[get(global._drag_obj)].ath, get(new_ath)); set(hotspot[get(global._drag_obj)].atv, get(new_atv));"
-		         onup="set(control.usercontrol, all);"
-		         onout="set(control.usercontrol, all);"
-		/>
-		<hotspot name="obj_cube"
-				 url="Images/cube.png"
-		         ath="150"
-		         atv="180"
-				 scale="0.2"
-		         title="Cubo (peso 80)"
-		         capture="true"
-		         ondown="set(global._drag_obj, name); set(control.usercontrol, off);"
-		         onmove="screentosphere(mouse.stagex, mouse.stagey, new_ath, new_atv); set(hotspot[get(global._drag_obj)].ath, get(new_ath)); set(hotspot[get(global._drag_obj)].atv, get(new_atv));"
-		         onup="set(control.usercontrol, all);"
-		         onout="set(control.usercontrol, all);"
-		/>
-		<hotspot name="obj_cylinder"
-				 url="Images/cylinder.png"
-		         ath="120"
-		         atv="180"
-		         title="Cilindro (peso 60)"
-		         capture="true"
-		         ondown="set(global._drag_obj, name); set(control.usercontrol, off);"
-		         onmove="screentosphere(mouse.stagex, mouse.stagey, new_ath, new_atv); set(hotspot[get(global._drag_obj)].ath, get(new_ath)); set(hotspot[get(global._drag_obj)].atv, get(new_atv));"
-		         onup="set(control.usercontrol, all);"
-		         onout="set(control.usercontrol, all);"
-		/>
+
 
 		<!-- Botón de validación -->
 		<hotspot name="validate_btn"
@@ -489,9 +359,7 @@
 				 url="Images/checkMark.png"
 				 ath="220"
 				 atv="180"
-		         width="200"
-		         height="50"
-		         title="✓ VALIDAR"
+
 		         onclick="validate_combination();"
 		/>
 		<hotspot name="back_btn"
@@ -501,8 +369,7 @@
 				 atv="180"
 		         width="100"
 		         height="40"
-		         title="← Atrás"
-		         onclick="loadscene(scene_Spztano, MERGE);"
+
 		/>
 
 	</scene>
