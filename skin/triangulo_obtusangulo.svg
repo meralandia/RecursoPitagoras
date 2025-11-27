@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Triángulo obtuso simple para hotspots -->
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <defs>
+    <style>
+      .fill { fill: #ffffff; }
+      .stroke { fill: none; stroke: #000000; stroke-width: 6; stroke-linejoin: round; }
+    </style>
+  </defs>
+  <!-- Obtuse triangle: one angle > 90deg -->
+  <polygon class="fill" points="20,180 180,40 40,20" />
+  <polygon class="stroke" points="20,180 180,40 40,20" />
+</svg>
