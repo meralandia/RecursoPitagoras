@@ -681,25 +681,29 @@
 			<cube url="panos/Spztano.tiles/vr/pano_%s.jpg" />
 		</image>
 
-
-
-		<!-- Botón de validación -->
-		<hotspot name="validate_btn"
-		         style="skin_hotspotstyle"
-				 url="Images/checkMark.png"
-				 ath="220"
-				 atv="180"
-
-		         onclick="validate_combination();"
-		/>
 		<hotspot name="back_btn"
-		         style="skin_hotspotstyle"
+		         style="skin_hotspotstyle2"
 				 url="Images/backIcon.png"
-				 ath="140"
+				 ath="180"
 				 atv="180"
-		         width="100"
-		         height="40"
+		/>
 
+		<hotspot name="Balanza_Respuesta_Correcta"
+				 scale="0.5"
+				 url="Images/Balanza_Respuesta_Correcta.png"
+				 ath="180"
+				 atv="180"
+				 rotate="180"
+				 distorted="true"
+		/>		
+		
+		<hotspot name="balanza_Respuesta_Incorrecta"
+				 scale="0.5"
+				 url="Images/Balanza_Respuesta_Incorrecta.png"
+				 ath="130"
+				 atv="180"
+				 rotate="180"
+				 distorted="true"
 		/>
 
 	</scene>
