@@ -323,6 +323,108 @@
 			skin_updatescroll();
 		);
 	</action>
+
+	<!-- Style para el triángulo de Pitágoras: render en espacio esférico (3D), adecuado para VR -->
+	<style name="triangle_fixed_style"
+		url="triangulo_pitagoras.svg"
+		distorted="true"
+		scale="1.0"
+		depth="1000"
+		edge="center"
+		tooltip=""
+		onover.addevent="" onout.addevent="" />
+
+	<!-- Style para triángulo obtuso: usar solo en escenas que lo requieran -->
+	<style name="triangle_obtus_style"
+		url="triangulo_obtusangulo.svg"
+		distorted="true"
+		scale="1.8"
+		rotate="170"
+		depth="1000"
+		edge="center"
+		tooltip="" />
+
+	<!-- Style para triángulo acutángulo: usar solo en escenas que lo requieran -->
+	<style name="triangle_acut_style"
+		url="triangulo_acutangulo.svg"
+		distorted="true"
+		scale="1.8"
+		depth="1000"
+		edge="center"
+		tooltip="" />
+
+		    <!-- Style para el número 7: usa la imagen en `images/7numero.png` -->
+			<style name="number7_style"
+				url="../images/7numero.png"
+				edge="center"
+				scale="1.0"
+				distorted="true"
+				tooltip="" />
+
+		    <!-- Style para el número 10: usa la imagen en `images/10numero.png` -->
+			<style name="number10_style"
+				url="../images/10numero.png"
+				edge="center"
+				scale="1.0"
+				distorted="true"
+				tooltip="" />
+
+			<!-- Style para el número 3: apunta a `images/3numero.png` (añadir imagen si falta) -->
+			<style name="number3_style"
+				url="../images/3numero.png"
+				edge="center"
+				scale="1.0"
+				distorted="true"
+				tooltip="" />
+
+			<!-- Style para el número 4: apunta a `images/4numero.png` -->
+			<style name="number4_style"
+				url="../images/4numero.png"
+				edge="center"
+				scale="1.0"
+				distorted="true"
+				tooltip="" />
+
+			<!-- Style para el número 5: apunta a `images/5numero.png` -->
+			<style name="number5_style"
+				url="../images/5numero.png"
+				edge="center"
+				scale="1.0"
+				distorted="true"
+				tooltip="" />
+
+			<!-- Style para el número 6: usa la imagen en `images/6numero.png` -->
+	<style name="number6_style"
+	      url="../images/6numero.png"
+	      edge="center"
+	      scale="1.0"
+	      distorted="true"
+	      tooltip="" />
+
+    <!-- Style para el número 11: usa la imagen en `images/11numero.png` -->
+    <style name="number11_style"
+          url="../images/11numero.png"
+		    edge="center"
+		    scale="1.0"
+          distorted="true"
+          tooltip="" />
+
+    <!-- Style para el número 17: usa la imagen en `images/17numero.png` -->
+    <style name="number17_style"
+          url="../images/17numero.png"
+		    edge="center"
+		    scale="1.0"
+          distorted="true"
+          tooltip="" />
+
+	<!-- Style para el signo de interrogación subido por el usuario -->
+	<style name="signo_style"
+	      url="../images/Signo-de-interrogacion.png"
+	      edge="center"
+	      scale="1.0"
+	      distorted="true"
+	      tooltip="" />
+
 	
 	<action name="skin_scene3dtransition" scope="local" args="scenename, hlookatoffset">
 		motionblur = 0.5;

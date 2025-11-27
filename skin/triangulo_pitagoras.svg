@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <!-- Triángulo rectángulo 3:4:5 escalado dentro de 64x64 -->
+  <polygon points="8,20 56,56 8,56" fill="#FFD700" stroke="#000000" stroke-width="2" />
+</svg>

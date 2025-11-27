@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Triángulo acutángulo simple para hotspots (único SVG válido) -->
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <defs>
+    <style>
+      .fill { fill: #ffffff; }
+      .stroke { fill: none; stroke: #000000; stroke-width: 6; stroke-linejoin: round; }
+    </style>
+  </defs>
+  <!-- Acute triangle: all angles < 90deg (narrow pointed top) -->
+  <polygon class="fill" points="100,18 182,158 18,150" />
+  <polygon class="stroke" points="100,18 182,158 18,150" />
+</svg>
