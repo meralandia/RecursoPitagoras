@@ -64,6 +64,8 @@
 	               design_text_shadow="1"
 	               />
 
+
+	
 	<action name="hide_spztano_elements">
 		set(hotspot[combo_btn_1].visible, false);
 		set(hotspot[obj_sphere].visible, false);
@@ -101,15 +103,6 @@
 	<!-- <action name="action_Demo" autorun="preinit" >
 		trace("Demo action executed.");
 	</action> -->
-
-	<action name="action_Demo" type ="javascript" autorun="preinit"><![CDATA[
-		console.log(krpano);
-	]]></action>
-
-	<action name="action_Demo" type ="javascript" autorun="onload"><![CDATA[
-		let currentScene = krpano.get("xml.scene");
-		console.log(currentScene);
-	]]></action>
 	
 	<action name="moveMyHotspot2"><![CDATA[
 		if(!hotspot[%1].isMoved,
@@ -166,6 +159,7 @@
 	]]></action>
 
 	<action name="validateBalance"><![CDATA[
+		
     # Inicializar sumas
     set(peso_left, 0);
     set(peso_right, 0);
@@ -198,6 +192,12 @@
     );
 
 	]]></action>
+
+	<action name="resetSides">
+    for(hs, hotspots,
+        set(hotspot[hs].side, null);
+    );
+	</action>
 
 	<set name="codigo_secreto" value="0" />
 
