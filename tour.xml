@@ -178,37 +178,43 @@
 		);
 	]]></action>
 
+	<style name="estilo_contador_scene" 
+		type="text" 
+		html="Código Actual: 0" 
+		css="color:#FFFFFF; font-family:Arial; font-size:20px; text-align:center; text-shadow:2px 2px 4px #000000;"
+		bg="true"
+		bgcolor="0x5588FF"
+		bgroundedge="10"
+		zorder="10"
+	/>
 
+	<def name="codigo_secreto" type="integer" />
 	<set name="codigo_secreto" value="0" />
 
-	<action name="actualizar_pantalla">
-		set(hotspot[texto_contador].html, calc:'Código Actual: [b]' + codigo_secreto + '[/b]');
-	</action>
-
-	<action name="incrementar_contador" type="javascript"><![CDATA[
-		var v = krpano.get('codigo_secreto');
-		v = Number(v) || 0;
-		v = v + 1;
-		krpano.set('codigo_secreto', v);
-		krpano.call('actualizar_pantalla');
-		if(v == 5) { krpano.trace('¡CÓDIGO SECRETO ENCONTRADO!'); }
+	<action name="actualizar_pantalla"><![CDATA[
+		trace('actualizar_pantalla - antes: ' + get(codigo_secreto));
+		set(hotspot[texto_contador].html, calc('Código Actual: [b]' + get(codigo_secreto) + '[/b]'));
+		trace('actualizar_pantalla - después: ' + get(codigo_secreto));
+	]]></action>
+	<action name="incrementar_contador"><![CDATA[
+		set(codigo_secreto, calc(get(codigo_secreto) + 1));
+		call(actualizar_pantalla);
+		trace('codigo_secreto incrementado: ' + get(codigo_secreto));
+		if(get(codigo_secreto) == 5, trace('¡CÓDIGO SECRETO ENCONTRADO!'););
 	]]></action>
 
-	<action name="reducir_contador" type="javascript"><![CDATA[
-		var v = krpano.get('codigo_secreto');
-		v = Number(v) || 0;
-		if(v > 0) {
-			v = v - 1;
-			krpano.set('codigo_secreto', v);
-			krpano.call('actualizar_pantalla');
-		}
+	<action name="reducir_contador"><![CDATA[
+		if(get(codigo_secreto) > 0,
+			set(codigo_secreto, calc(get(codigo_secreto) - 1));
+			call(actualizar_pantalla);
+		);
 	]]></action>
 
 	<events onloaded="actualizar_pantalla();" />
 
 
-<scene name="scene_Capilla_2_con_lira" title="Capilla 2 con lira" onstart="" onstop="" havevrimage.mobilevr="false" havevrimage.no-mobilevr="true" thumburl="panos/Capilla_2_con_lira.tiles/thumb.jpg" lat="" lng="" alt="" heading="">
-		
+	<scene name="scene_Capilla_2_con_lira" title="Capilla 2 con lira" onstart="" onstop="" havevrimage.mobilevr="false" havevrimage.no-mobilevr="true" thumburl="panos/Capilla_2_con_lira.tiles/thumb.jpg" lat="" lng="" alt="" heading="" onloaded="actualizar_pantalla();"> ```
+	
 		<control bouncinglimits="calc:image.cube ? true : false" />
 
 		<view hlookat="0.0" vlookat="0.0" fovtype="MFOV" fov="120" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
@@ -223,40 +229,29 @@
 			<cube url="panos/Capilla_2_con_lira.tiles/vr/pano_%s.jpg" />
 		</image>
 
-
-	<style name="estilo_contador_scene" 
-        type="text" 
-        html="Código Actual: 0" 
-        css="color:#FFFFFF; font-family:Arial; font-size:20px; text-align:center; text-shadow:2px 2px 4px #000000;"
-        bg="true"
-        bgcolor="0x5588FF"
-        bgroundedge="10"
-        zorder="10"
+	<hotspot name="texto_contador" 
+            style="estilo_contador_scene" 
+            handcursor="false" 
+            visible="true"
+            ath="-2.9563107" atv="-19.5445091" 
+            distorted="true" 
+            width="200" height="50"
     />
 
-    <hotspot name="texto_contador" 
-             style="estilo_contador_scene" 
-             handcursor="false" 
-             visible="true"
-             
-             ath="-2.9563107"  atv="-19.5445091" distorted="true"  width="200" height="50"
-    />
-
-
-	<hotspot name="boton_incremento_fisico" 
-             url="images/6numero.png"  
-             ath="0.0" vth="-15.0" 
-             distorted="true" 
-             width="100" height="100" 
-             onclick="incrementar_contador();"
+ 	<hotspot name="boton_incremento_fisico" 
+	    url="images/6numero.png" 
+	    ath="-9.0318164" atv="1.1763250"
+            distorted="true" 
+            width="100" height="100" 
+            onclick="incrementar_contador();"
     />
 
     <hotspot name="boton_decremento_fisico" 
-             url="images/7numero.png" 
-             ath="-5.0" vth="-15.0" 
-             distorted="true" 
-             width="100" height="100" 
-             onclick="reducir_contador();"
+            url="images/7numero.png" 
+	    ath="5.7067884" atv="2.0257322"
+            distorted="true" 
+            width="100" height="100" 
+            onclick="reducir_contador();"
     />
 
 		<!-- Hotspot triangular para la lira -->
@@ -314,7 +309,7 @@
 
 	</scene>
 
-	<scene name="Pitagoras1" title="Pitagoras1" onstart="" onstop="" havevrimage.mobilevr="false" havevrimage.no-mobilevr="true" thumburl="panos/Capilla_2_con_lira.tiles/thumb.jpg" lat="" lng="" alt="" heading="">
+	<scene name="Pitagoras1" title="Pitagoras1" onstart="" onstop="" havevrimage.mobilevr="false" havevrimage.no-mobilevr="true" thumburl="panos/Capilla_2_con_lira.tiles/thumb.jpg" lat="" lng="" alt="" heading="" onloaded="actualizar_pantalla(texto_contador);" >
 		
 		<control bouncinglimits="calc:image.cube ? true : false" />
 
@@ -330,6 +325,13 @@
 			<cube url="panos/Capilla_2_con_lira.tiles/vr/pano_%s.jpg" />
 		</image>
 
+		<hotspot name="texto_contador"  style="estilo_contador_scene" 
+							handcursor="false" 
+							visible="true"
+							
+							ath="90.0" atv="-10.0" distorted="true" 
+							width="200" height="50"
+					/>
 		<!-- Hotspot triangular para la lira -->
 		<hotspot name="hs_lira_triangle" ath="44.2485854" atv="1.6432014" scale="1.8" keep="false" tooltip="Lira" zoom="false" style="triangle_fixed_style"
 			handcursor="true"
