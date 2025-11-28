@@ -260,7 +260,7 @@
     />
 
  	<hotspot name="boton_incremento_fisico" 
-	    url="images/6numero.png" 
+	    url="Images/6numero.png" 
 	    ath="-9.0318164" atv="1.1763250"
             distorted="true" 
             width="100" height="100" 
@@ -268,7 +268,7 @@
     />
 
     <hotspot name="boton_decremento_fisico" 
-            url="images/7numero.png" 
+            url="Images/7numero.png" 
 	    ath="5.7067884" atv="2.0257322"
             distorted="true" 
             width="100" height="100" 
@@ -281,7 +281,7 @@
 			onclick="text2('Lira', 'Información sobre la lira', 400, 150);" />
 
 		<hotspot name="LiraInfo" 
-         url="images/LiraInfo.png" 
+         url="Images/LiraInfo.png" 
          scale="0.8" 
 		 ath="-45.8809090" atv="-21.0074160"
 		 rx="-10" ry="0" rz="0"
@@ -359,7 +359,7 @@
 			onclick="text2('Lira', 'Información sobre la lira', 400, 150);" />
 
 		<hotspot name="LiraInfo" 
-         url="images/LiraInfo.png" 
+         url="Images/LiraInfo.png" 
          scale="0.8" 
 		 ath="-45.8809090" atv="-21.0074160"
 		 rx="-10" ry="0" rz="0"
@@ -425,7 +425,7 @@
 			onclick="text2('Lira', 'Información sobre la lira', 400, 150);" />
 
 		<hotspot name="LiraInfo" 
-         url="images/LiraInfo.png" 
+         url="Images/LiraInfo.png" 
          scale="0.8" 
 		 ath="-45.8809090" atv="-21.0074160"
 		 rx="-10" ry="0" rz="0"
@@ -490,7 +490,7 @@
 			onclick="text2('Lira', 'Información sobre la lira', 400, 150);" />
 
 		<hotspot name="LiraInfo" 
-         url="images/LiraInfo.png" 
+         url="Images/LiraInfo.png" 
          scale="0.8" 
 		 ath="-45.8809090" atv="-21.0074160"
 		 rx="-10" ry="0" rz="0"
