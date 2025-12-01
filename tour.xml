@@ -116,8 +116,8 @@
 			set(rndatv, calc(random()*6 - 1.5));
 
 			// Nueva posición base + dispersión
-			tween(hotspot[%1].ath, calc(15.80 + rndath), 0.7, easeOutQuad);
-			tween(hotspot[%1].atv, calc(1.5 + rndatv), 0.7, easeOutQuad);
+			tween(hotspot[%1].ath, calc(10.90 + rndath), 0.7, easeOutQuad);
+			tween(hotspot[%1].atv, calc(0.63 + rndatv), 0.7, easeOutQuad);
 
 			set(hotspot[%1].side, 'right');
 			set(hotspot[%1].isMoved, true);
@@ -143,8 +143,8 @@
 			set(rndatv, calc(random()*6 - 1.5));
 
 			// Nueva posición base + dispersión
-			tween(hotspot[%1].ath, calc(-16.80 + rndath), 0.7, easeOutQuad);
-			tween(hotspot[%1].atv, calc(-1.5 + rndatv), 0.7, easeOutQuad);
+			tween(hotspot[%1].ath, calc(-11.39 + rndath), 0.7, easeOutQuad);
+			tween(hotspot[%1].atv, calc(-1 + rndatv), 0.7, easeOutQuad);
 
 			set(hotspot[%1].side, 'left');
 			set(hotspot[%1].isMoved, true);
@@ -192,12 +192,6 @@
     );
 
 	]]></action>
-
-	<action name="resetSides">
-    for(hs, hotspots,
-        set(hotspot[hs].side, null);
-    );
-	</action>
 
 	<action name="resetSides">
     for(hs, hotspots,
@@ -570,6 +564,118 @@
 			<cube url="panos/Espacio.tiles/vr/pano_%s.jpg" />
 		</image>
 
+		<hotspot name="fig_elipse"
+			type="polygonal"
+			fillcolor="0x33AADD"
+			fillalpha="0.25"
+			bordercolor="0xFFFFFF"
+			borderwidth="2"
+			onclick="check_match('ellipse');">
+
+			<point ath="-30"    atv="-15" />
+			<point ath="-26"    atv="-14.6" />
+			<point ath="-22"    atv="-13.5" />
+			<point ath="-19"    atv="-11.8" />
+			<point ath="-18"    atv="-10" />
+			<point ath="-19"    atv="-8.2" />
+			<point ath="-22"    atv="-6.5" />
+			<point ath="-26"    atv="-5.4" />
+			<point ath="-30"    atv="-5" />
+			<point ath="-34"    atv="-5.4" />
+			<point ath="-38"    atv="-6.5" />
+			<point ath="-41"    atv="-8.2" />
+			<point ath="-42"    atv="-10" />
+			<point ath="-41"    atv="-11.8" />
+			<point ath="-38"    atv="-13.5" />
+			<point ath="-34"    atv="-14.6" />
+		</hotspot>
+
+		<hotspot name="fig_circule"
+			type="polygonal"
+			fillcolor="0x33AADD"
+			fillalpha="0.25"
+			bordercolor="0xFFFFFF"
+			borderwidth="2"
+			onclick="check_match('circule');">
+
+			<point ath="35"    atv="-13" />
+			<point ath="39"    atv="-12" />
+			<point ath="42"    atv="-9" />
+			<point ath="43"    atv="-5" />
+			<point ath="42"    atv="-1" />
+			<point ath="39"    atv="2" />
+			<point ath="35"    atv="3" />
+			<point ath="31"    atv="2" />
+			<point ath="28"    atv="-1" />
+			<point ath="27"    atv="-5" />
+			<point ath="28"    atv="-9" />
+			<point ath="31"    atv="-12" />
+		</hotspot>
+
+		<hotspot name="fig_parabola"
+			type="polygonal"
+			fillcolor="0xAA33DD"
+			fillalpha="0.25"
+			bordercolor="0xFFFFFF"
+			borderwidth="2"
+			onclick="check_match('parabola');">
+
+			<point ath="-12" atv="18" />
+			<point ath="-10" atv="17" />
+			<point ath="-8"  atv="16.3" />
+			<point ath="-6"  atv="15.7" />
+			<point ath="-4"  atv="15.3" />
+			<point ath="-2"  atv="15.1" />
+			<point ath="0"   atv="15" />
+			<point ath="2"   atv="15.1" />
+			<point ath="4"   atv="15.3" />
+			<point ath="6"   atv="15.7" />
+			<point ath="8"   atv="16.3" />
+			<point ath="10"  atv="17" />
+			<point ath="12"  atv="18" />
+		</hotspot>
+
+		<hotspot name="fig_hiperbola_der"
+			type="polygonal"
+			fillcolor="0x33DD55"
+			fillalpha="0.25"
+			bordercolor="0xFFFFFF"
+			borderwidth="2"
+			onclick="check_match('hyperbola');">
+
+			<!-- Rama superior (orden izquierda → derecha) -->
+			<point ath="-22" atv="5" />
+			<point ath="-21" atv="5.8" />
+			<point ath="-20" atv="6.6" />
+			<point ath="-19" atv="7.2" />
+			<point ath="-18" atv="7.6" />
+			<point ath="-17" atv="7.9" />
+			<point ath="-16" atv="8.1" />
+
+			<!-- Rama inferior (orden derecha → izquierda) -->
+			<point ath="-16" atv="1.9" />
+			<point ath="-17" atv="1.7" />
+			<point ath="-18" atv="1.4" />
+			<point ath="-19" atv="1.0" />
+			<point ath="-20" atv="0.4" />
+			<point ath="-21" atv="-0.4" />
+			<point ath="-22" atv="-1.2" />
+
+			<layer name="eq_elipse"
+				style="eqstyle"
+				html="x^2/9 + y^2/4 = 1"
+				onclick="select_equation('ellipse')"
+			/>
+
+			<layer name="eq_circle"
+				style="eqstyle"
+				html="x^2 + y^2 = 25"
+				onclick="select_equation('circle')"
+			/>
+
+		</hotspot>
+
+
 	</scene>
 
 	<scene name="scene_Pilares" title="Pilares" onstart="" havevrimage.mobilevr="false" havevrimage.no-mobilevr="true" thumburl="panos/Pilares.tiles/thumb.jpg" lat="" lng="" alt="" heading="">
@@ -611,7 +717,7 @@
 				 url="images/balanceando_masas.png"
 				 ath="180"
 				 atv="180"	
-				 scale="0.3"
+				 scale="0.4"
 				 distorted="true"
 				 rotate="180"
 				 onclick="show_spztano_elements(); set(visible,false);"
@@ -622,8 +728,7 @@
 				 url="images/balanza.png"
 				 ath="180"
 				 atv="180"	
-				 scale="0.1"
-		         title="1. Esfera (Izq) + Cubo (Der)"
+				 scale="0.06"
 				 depth="100"
 				 handcoursor="false"
 				 enabled="false"
@@ -638,7 +743,7 @@
 		         onclick="moveMyHotspot('obj_sphere'); set(enabled,false); delayedcall(1, set(enabled,true));"
 				 scale="0.2"
 				 distorted="true"
-				 weight="calc(2)"
+				 weight="2"
 		/>
 		<hotspot name="obj_cube"
 				 url="images/cube.png"
@@ -666,7 +771,7 @@
 		         onclick="moveMyHotspot2('obj_sphere2'); set(enabled,false); delayedcall(1, set(enabled,true));"
 				 scale="0.2"
 				 distorted="true"
-				 weight="calc(2)"
+				 weight="2"
 			/>
 		<hotspot name="obj_cube2"
 				 url="images/cube.png"
@@ -690,8 +795,8 @@
 		         style="skin_hotspotstyle2"
 				 url="images/checkMark.png"
 				 ath="0"
-				 atv="-35"
-				 scale="0.1"
+				 atv="-25"
+				 scale="0.06"
 				 distorted="true"
 				 onclick="loadscene('scene_Spztano_game', null, MERGE, BLEND(0.5,linear)); validateBalance();"
 		/>
@@ -717,25 +822,27 @@
 		<hotspot name="back_btn"
 		         style="skin_hotspotstyle2"
 				 url="images/backIcon.png"
-				 ath="180"
-				 atv="180"
+				 scale="0.06"
+				 ath="0"
+				 atv="-25"
 				 onclick="loadscene('scene_Spztano', null, MERGE, BLEND(0.5,linear));"
 		/>
 
 		<hotspot name="Balanza_Respuesta_Correcta"
-				 scale="0.5"
+				 scale="0.4"
 				 url="images/Balanza_Respuesta_Correcta.png"
 				 ath="180"
 				 atv="180"
 				 rotate="180"
 				 distorted="true"
 				 visible="false"
+				 
 		/>		
 		
 		<hotspot name="balanza_Respuesta_Incorrecta"
-				 scale="0.5"
+				 scale="0.4"
 				 url="images/Balanza_Respuesta_Incorrecta.png"
-				 ath="130"
+				 ath="180"
 				 atv="180"
 				 rotate="180"
 				 distorted="true"

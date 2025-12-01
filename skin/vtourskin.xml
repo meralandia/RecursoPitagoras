@@ -293,11 +293,17 @@
 	       use3dtransition="true"
 	       onclick="skin_hotspotstyle_click();"
 	       depth="1000"
-	       scale="0.1"
-	       onover.addevent="tween(scale,0.111);"
-	       onout.addevent="tween(scale,0.1);"
+	       scale="0.06"
+	       onover.addevent="tween(scale,0.0666);"
+	       onout.addevent="tween(scale,0.06);"
 	       onloaded.addevent="skin_hotspotstyle_setup();"
 	       />
+
+	<style name="eqstyle"
+		type="text"
+		css="font-size:20px; color:white; cursor:pointer;"
+		width="300" height="40"
+	/>
 
 	<action name="skin_hotspotstyle_setup" scope="local">
 		if(isvalue(caller.linkedscene) AND skin_settings.tooltips_hotspots,
